@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mujoco model="alfa_robot">
+
+  <compiler angle="radian" meshdir="alfa_robot_arm_v2/meshes" autolimits="true"/>
+  <option timestep="0.002" gravity="0 0 -9.81" integrator="implicitfast"/>
+
+  <default>
+    <joint damping="50" armature="2.0" limited="true"/>
+    <velocity ctrllimited="true" forcelimited="true"/>
+    <position ctrllimited="true" forcelimited="true"/>
+
+    <default class="visual">
+      <geom contype="0" conaffinity="0" group="2"/>
+    </default>
+    <default class="collision">
+      <geom contype="1" conaffinity="1" group="3" friction="1.0 0.05 0.01"/>
+    </default>
+  </default>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.6 0.8 1.0" rgb2="0.0 0.0 0.0" width="512" height="512"/>
+    <texture name="grid" type="2d" builtin="checker" rgb1="0.85 0.85 0.85" rgb2="0.65 0.65 0.65" width="512" height="512"/>
+    <material name="grid_mat" texture="grid" texrepeat="4 4" reflectance="0.2"/>
+    <material name="blue"   rgba="0.2 0.4 0.8 1"/>
+    <material name="grey"   rgba="0.45 0.45 0.45 1"/>
+    <material name="white"  rgba="0.92 0.92 0.92 1"/>
+    <material name="yellow" rgba="0.9 0.8 0.1 1"/>
+
+    <!-- New v2 visual meshes -->
+    <mesh name="vis_base_link"    file="visual/base_link.STL"/>
+    <mesh name="vis_turn"         file="visual/turn.STL"/>
+    <mesh name="vis_updown"       file="visual/updown.STL"/>
+    <mesh name="vis_plate"        file="visual/plate.STL"/>
+    <mesh name="vis_rightarmbase" file="visual/rightarmbase.STL"/>
+    <mesh name="vis_rightjoint1"  file="visual/rightjoint1.STL"/>
+    <mesh name="vis_rightjoint2"  file="visual/rightjoint2.STL"/>
+    <mesh name="vis_rightjoint3"  file="visual/rightjoint3.STL"/>
+    <mesh name="vis_rightjoint4"  file="visual/rightjoint4.STL"/>
+    <mesh name="vis_leftarmbase"  file="visual/leftarmbase.STL"/>
+    <mesh name="vis_leftjoint1"   file="visual/leftjoint1.STL"/>
+    <mesh name="vis_leftjoint2"   file="visual/leftjoint2.STL"/>
+    <mesh name="vis_leftjoint3"   file="visual/leftjoint3.STL"/>
+    <mesh name="vis_leftjoint4"   file="visual/leftjoint4.STL"/>
+    <mesh name="vis_leftjoint5"   file="visual/leftjoint5.STL"/>
+    <mesh name="vis_leftjoint6"   file="visual/leftjoint6.STL"/>
+    <mesh name="vis_camera"       file="visual/camera.STL"/>
+    <mesh name="vis_lidar"        file="visual/lidar.STL"/>
+
+    <!-- New v2 collision meshes -->
+    <mesh name="col_base_link"    file="collision/base_link.STL"/>
+    <mesh name="col_turn"         file="collision/turn.STL"/>
+    <mesh name="col_updown"       file="collision/updown.STL"/>
+    <mesh name="col_plate"        file="collision/plate.STL"/>
+    <mesh name="col_rightarmbase" file="collision/rightarmbase.STL"/>
+    <mesh name="col_rightjoint1"  file="collision/rightjoint1.STL"/>
+    <mesh name="col_rightjoint2"  file="collision/rightjoint2.STL"/>
+    <mesh name="col_rightjoint3"  file="collision/rightjoint3.STL"/>
+    <mesh name="col_rightjoint4"  file="collision/rightjoint4.STL"/>
+    <mesh name="col_leftarmbase"  file="collision/leftarmbase.STL"/>
+    <mesh name="col_leftjoint1"   file="collision/leftjoint1.STL"/>
+    <mesh name="col_leftjoint2"   file="collision/leftjoint2.STL"/>
+    <mesh name="col_leftjoint3"   file="collision/leftjoint3.STL"/>
+    <mesh name="col_leftjoint4"   file="collision/leftjoint4.STL"/>
+    <mesh name="col_leftjoint5"   file="collision/leftjoint5.STL"/>
+    <mesh name="col_leftjoint6"   file="collision/leftjoint6.STL"/>
+    <mesh name="col_camera"       file="collision/camera.STL"/>
+    <mesh name="col_lidar"        file="collision/lidar.STL"/>
+  </asset>
+
+  <worldbody>
+    <geom name="floor" type="plane" size="5 5 0.1" material="grid_mat"/>
+
+    <body name="base_link" pos="-0.3 0 0.1">
+      <freejoint name="base_freejoint"/>
+      <inertial pos="-0.441931 0.000260 0.176428" mass="2000.931"
+                fullinertia="66.5681 65.6389 112.9385 5.748e-10 9.8501 2.760e-9"/>
+      <geom class="visual"    type="mesh" mesh="vis_base_link" material="blue"/>
+      <geom class="collision" type="mesh" mesh="col_base_link"/>
+
+      <!-- turn joint -->
+      <body name="turn_link" pos="-0.007937 0 0.129">
+        <inertial pos="-0.069789 -0.000124 0.982155" mass="42.074"
+                  fullinertia="10.0720 10.0938 0.3272 -1.754e-6 5.298e-5 1.436e-6"/>
+        <joint name="turn" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="3000" armature="5.0"/>
+        <geom class="visual"    type="mesh" mesh="vis_turn" material="grey"/>
+        <geom class="collision" type="mesh" mesh="col_turn"/>
+
+        <!-- updown joint — new z-offset from URDF: 0.57771 -->
+        <body name="updown_link" pos="-0.23547 0 0.57771">
+          <inertial pos="-0.196829 0.014867 0.095685" mass="26.931"
+                    fullinertia="0.231217 0.178754 0.348823 2.933e-5 9.513e-4 -1.448e-5"/>
+          <joint name="updown" type="slide" axis="0 0 1" range="0 1.0" damping="3000" armature="5.0"/>
+          <geom class="visual"    type="mesh" mesh="vis_updown" material="grey"/>
+          <geom class="collision" type="mesh" mesh="col_updown"/>
+
+          <!-- plate -->
+          <body name="plate_link" pos="0.42217 0 0.0325">
+            <inertial pos="0.069892 0 -0.026500" mass="5.634"
+                      fullinertia="0.059666 0.055441 0.112469 0 0 0"/>
+            <joint name="plate" type="slide" axis="1 0 0" range="0 0.5" damping="3000" armature="5.0"/>
+            <geom class="visual"    type="mesh" mesh="vis_plate" material="white"/>
+            <geom class="collision" type="mesh" mesh="col_plate"/>
+          </body>
+
+          <!-- RIGHT ARM (5 DOF: rightarmbase + rightjoint1-4) -->
+          <body name="rightarmbase_link" pos="-0.16145 -0.47517 0.146">
+            <inertial pos="0.006518 0.016689 0.052267" mass="6.842"
+                      fullinertia="0.016401 0.092593 0.091323 9.838e-6 3.898e-4 -1.350e-4"/>
+            <joint name="rightarmbase" type="slide" axis="0 1 0" range="0 0.16" damping="3000" armature="5.0"/>
+            <geom class="visual"    type="mesh" mesh="vis_rightarmbase" material="white"/>
+            <geom class="collision" type="mesh" mesh="col_rightarmbase"/>
+
+            <body name="rightjoint1_link" pos="0.08729 0.024997 0.07136">
+              <inertial pos="0.363255 -0.004306 0.003995" mass="2.462"
+                        fullinertia="0.003491 0.037754 0.038432 -2.692e-7 1.186e-6 -8.959e-5"/>
+              <joint name="rightjoint1" type="slide" axis="1 0 0" range="0 0.5" damping="3000" armature="5.0"/>
+              <geom class="visual"    type="mesh" mesh="vis_rightjoint1" material="white"/>
+              <geom class="collision" type="mesh" mesh="col_rightjoint1"/>
+
+              <body name="rightjoint2_link" pos="0.67445 -0.035997 0.04964" euler="0 1.5708 0">
+                <inertial pos="0.150410 0.004490 0.018885" mass="2.490"
+                          fullinertia="0.003178 0.008697 0.010871 -6.949e-5 3.536e-7 2.833e-8"/>
+                <joint name="rightjoint2" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="3000" armature="5.0"/>
+                <geom class="visual"    type="mesh" mesh="vis_rightjoint2" material="white"/>
+                <geom class="collision" type="mesh" mesh="col_rightjoint2"/>
+
+                <body name="rightjoint3_link" pos="0.19998 0.0021836 0.0834">
+                  <inertial pos="-2.689e-5 0.001773 0.077114" mass="2.360"
+                            fullinertia="0.003714 0.005464 0.004256 6.972e-6 6.543e-7 -3.574e-7"/>
+                  <joint name="rightjoint3" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="3000" armature="5.0"/>
+                  <geom class="visual"    type="mesh" mesh="vis_rightjoint3" material="white"/>
+                  <geom class="collision" type="mesh" mesh="col_rightjoint3"/>
+
+                  <body name="rightjoint4_link" pos="-0.00022361 -0.054349 0.105" quat="0.706049 0.705887 -0.041545 0.038640">
+                    <inertial pos="0.168115 -0.011286 -0.015749" mass="1.712"
+                              fullinertia="0.004842 0.004223 0.003486 -6.658e-5 -9.079e-6 9.334e-7"/>
+                    <joint name="rightjoint4" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="3000" armature="5.0"/>
+                    <geom class="visual"    type="mesh" mesh="vis_rightjoint4" material="white"/>
+                    <geom class="collision" type="mesh" mesh="col_rightjoint4"/>
+                    <!-- Right suction cup (attached to last right arm link) -->
+                    <body name="right_suction_cup" pos="0.275 -0.0308 -0.02825">
+                      <geom class="visual" type="cylinder" size="0.025 0.02" pos="0 0 0" material="grey"/>
+                      <geom class="visual" type="cylinder" size="0.04 0.005" pos="0.025 0 0" euler="0 1.5708 0"
+                            rgba="1.0 0.5 0.0 1" contype="0" conaffinity="0" group="2"/>
+                      <geom name="right_suction_col" type="cylinder" size="0.025 0.005" pos="0.032 0 0"
+                            euler="0 1.5708 0" contype="1" conaffinity="1" group="3"/>
+                      <site name="right_ee"           pos="0.032 0 0" size="0.015" rgba="1 0.3 0 1"/>
+                      <site name="right_suction_dir"  pos="0.06  0 0" size="0.005" rgba="1 0 0 0.5"/>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+
+          <!-- LEFT ARM (7 DOF: leftarmbase + leftjoint1-6) -->
+          <body name="leftarmbase_link" pos="-0.16145 0.3282 0.146">
+            <inertial pos="0.008590 -0.028767 0.049956" mass="7.065"
+                      fullinertia="0.016473 0.092678 0.091398 9.842e-6 3.877e-4 1.209e-4"/>
+            <joint name="leftarmbase" type="slide" axis="0 1 0" range="0 0.14" damping="3000" armature="5.0"/>
+            <geom class="visual"    type="mesh" mesh="vis_leftarmbase" material="white"/>
+            <geom class="collision" type="mesh" mesh="col_leftarmbase"/>
+
+            <body name="leftjoint1_link" pos="0.15658 -0.096099 0.086">
+              <inertial pos="0.323985 0.067515 -0.013686" mass="2.481"
+                        fullinertia="0.002635 0.037828 0.038418 -2.785e-7 2.278e-6 3.741e-5"/>
+              <joint name="leftjoint1" type="slide" axis="1 0 0" range="0 0.42" damping="3000" armature="5.0"/>
+              <geom class="visual"    type="mesh" mesh="vis_leftjoint1" material="white"/>
+              <geom class="collision" type="mesh" mesh="col_leftjoint1"/>
+
+              <body name="leftjoint2_link" pos="0.67335 0.10135 0.04" euler="0 1.5708 0">
+                <inertial pos="0.009981 -0.050151 0.083613" mass="0.924"
+                          fullinertia="0.001389 0.001260 0.001485 -9.608e-7 -2.480e-7 6.560e-7"/>
+                <joint name="leftjoint2" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="3000" armature="5.0"/>
+                <geom class="visual"    type="mesh" mesh="vis_leftjoint2" material="white"/>
+                <geom class="collision" type="mesh" mesh="col_leftjoint2"/>
+
+                <body name="leftjoint3_link" pos="0.01 0.0058 0.098" quat="-0.5 0.5 0.5 0.5">
+                  <inertial pos="0.225300 1.601e-5 -0.072044" mass="1.344"
+                            fullinertia="0.001479 0.002752 0.002791 1.092e-6 -3.745e-7 -1.759e-8"/>
+                  <joint name="leftjoint3" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="3000" armature="5.0"/>
+                  <geom class="visual"    type="mesh" mesh="vis_leftjoint3" material="white"/>
+                  <geom class="collision" type="mesh" mesh="col_leftjoint3"/>
+
+                  <body name="leftjoint4_link" pos="0.3418 -0.01 -0.082" quat="0.5 0.5 0.5 0.5">
+                    <inertial pos="0.010020 -0.009857 0.084009" mass="0.983"
+                              fullinertia="0.001463 0.001366 0.001518 -1.079e-6 2.060e-7 -3.515e-7"/>
+                    <joint name="leftjoint4" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="3000" armature="5.0"/>
+                    <geom class="visual"    type="mesh" mesh="vis_leftjoint4" material="white"/>
+                    <geom class="collision" type="mesh" mesh="col_leftjoint4"/>
+
+                    <body name="leftjoint5_link" pos="0.01 -0.0022 0.098" quat="-0.5 0.5 0.5 0.5">
+                      <inertial pos="0.010179 9.302e-6 0.114867" mass="1.051"
+                                fullinertia="0.002025 0.003286 0.003400 1.845e-8 -3.062e-4 7.177e-10"/>
+                      <joint name="leftjoint5" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="3000" armature="5.0"/>
+                      <geom class="visual"    type="mesh" mesh="vis_leftjoint5" material="white"/>
+                      <geom class="collision" type="mesh" mesh="col_leftjoint5"/>
+
+                      <body name="leftjoint6_link" pos="0.13 0 0.1435" euler="1.5708 0 0">
+                        <inertial pos="0.033835 0 0" mass="0.763"
+                                  fullinertia="0.003241 0.001920 0.001504 0 0 0"/>
+                        <joint name="leftjoint6" type="slide" axis="1 0 0" range="0 0.15" damping="3000" armature="5.0"/>
+                        <geom class="visual"    type="mesh" mesh="vis_leftjoint6" material="white"/>
+                        <geom class="collision" type="mesh" mesh="col_leftjoint6"/>
+                        <!-- Left suction cup (attached to last left arm link: leftjoint6) -->
+                        <body name="left_suction_cup" pos="0.1 0 0">
+                          <geom class="visual" type="cylinder" size="0.025 0.02" pos="0 0 0" material="grey"/>
+                          <geom class="visual" type="cylinder" size="0.13 0.005" pos="0.025 0 0" euler="0 1.5708 0"
+                                rgba="1.0 0.5 0.0 1" contype="0" conaffinity="0" group="2"/>
+                          <geom name="left_suction_col" type="cylinder" size="0.13 0.005" pos="0.032 0 0"
+                                euler="0 1.5708 0" contype="1" conaffinity="1" group="3"/>
+                          <site name="left_ee"          pos="0.032 0 0" size="0.015" rgba="0 1 0.3 1"/>
+                          <site name="left_suction_dir" pos="0.06  0 0" size="0.005" rgba="0 1 0 0.5"/>
+                        </body>
+                      </body>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+
+          <!-- Camera (fixed) -->
+          <body name="camera_link" pos="0.51384 0 0.07785">
+            <inertial pos="-0.012950 0 0" mass="0.088"
+                      fullinertia="1.090e-4 1.083e-5 1.080e-4 0 0 0"/>
+            <geom class="visual"    type="mesh" mesh="vis_camera" material="yellow"/>
+            <geom class="collision" type="mesh" mesh="col_camera"/>
+            <camera name="robot_camera" pos="0 0 0" euler="0 0 0" fovy="60"/>
+          </body>
+
+          <!-- Lidar (fixed) -->
+          <body name="lidar_link" pos="0.46082 0 0.13841">
+            <inertial pos="-0.000766 0 -0.002858" mass="0.296"
+                      fullinertia="2.292e-4 2.313e-4 2.025e-4 0 -7.700e-6 0"/>
+            <geom class="visual"    type="mesh" mesh="vis_lidar" material="grey"/>
+            <geom class="collision" type="mesh" mesh="col_lidar"/>
+          </body>
+
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <!-- Base -->
+    <position name="act_turn"        joint="turn"        kp="50000" ctrlrange="-3.14 3.14" forcerange="-5000 5000"/>
+    <position name="act_updown"      joint="updown"      kp="50000" ctrlrange="0 1.0"      forcerange="-5000 5000"/>
+    <position name="act_plate"       joint="plate"       kp="50000" ctrlrange="0 0.5"      forcerange="-5000 5000"/>
+
+    <!-- Right arm -->
+    <position name="act_rightarmbase" joint="rightarmbase" kp="50000" ctrlrange="0 0.16"      forcerange="-5000 5000"/>
+    <position name="act_rightjoint1"  joint="rightjoint1"  kp="50000" ctrlrange="0 0.5"       forcerange="-5000 5000"/>
+    <position name="act_rightjoint2"  joint="rightjoint2"  kp="50000" ctrlrange="-3.14 3.14"  forcerange="-5000 5000"/>
+    <position name="act_rightjoint3"  joint="rightjoint3"  kp="50000" ctrlrange="-3.14 3.14"  forcerange="-5000 5000"/>
+    <position name="act_rightjoint4"  joint="rightjoint4"  kp="50000" ctrlrange="-3.14 3.14"  forcerange="-5000 5000"/>
+
+    <!-- Left arm -->
+    <position name="act_leftarmbase"  joint="leftarmbase"  kp="50000" ctrlrange="0 0.14"      forcerange="-5000 5000"/>
+    <position name="act_leftjoint1"   joint="leftjoint1"   kp="50000" ctrlrange="0 0.42"       forcerange="-5000 5000"/>
+    <position name="act_leftjoint2"   joint="leftjoint2"   kp="50000" ctrlrange="-3.14 3.14"  forcerange="-5000 5000"/>
+    <position name="act_leftjoint3"   joint="leftjoint3"   kp="50000" ctrlrange="-3.14 3.14"  forcerange="-5000 5000"/>
+    <position name="act_leftjoint4"   joint="leftjoint4"   kp="50000" ctrlrange="-3.14 3.14"  forcerange="-5000 5000"/>
+    <position name="act_leftjoint5"   joint="leftjoint5"   kp="50000" ctrlrange="-3.14 3.14"  forcerange="-5000 5000"/>
+    <position name="act_leftjoint6"   joint="leftjoint6"   kp="50000" ctrlrange="0 0.15"       forcerange="-5000 5000"/>
+
+    <!-- Suction cups -->
+    <adhesion name="act_right_suction" body="right_suction_cup" ctrlrange="0 1" gain="50000" forcerange="0 50000"/>
+    <adhesion name="act_left_suction"  body="left_suction_cup"  ctrlrange="0 1" gain="50000" forcerange="0 50000"/>
+  </actuator>
+
+  <sensor>
+    <!-- Base -->
+    <jointpos name="s_turn"        joint="turn"/>
+    <jointpos name="s_updown"      joint="updown"/>
+    <jointpos name="s_plate"       joint="plate"/>
+
+    <!-- Right arm -->
+    <jointpos name="s_rightarmbase" joint="rightarmbase"/>
+    <jointpos name="s_rightjoint1"  joint="rightjoint1"/>
+    <jointpos name="s_rightjoint2"  joint="rightjoint2"/>
+    <jointpos name="s_rightjoint3"  joint="rightjoint3"/>
+    <jointpos name="s_rightjoint4"  joint="rightjoint4"/>
+
+    <!-- Left arm -->
+    <jointpos name="s_leftarmbase"  joint="leftarmbase"/>
+    <jointpos name="s_leftjoint1"   joint="leftjoint1"/>
+    <jointpos name="s_leftjoint2"   joint="leftjoint2"/>
+    <jointpos name="s_leftjoint3"   joint="leftjoint3"/>
+    <jointpos name="s_leftjoint4"   joint="leftjoint4"/>
+    <jointpos name="s_leftjoint5"   joint="leftjoint5"/>
+    <jointpos name="s_leftjoint6"   joint="leftjoint6"/>
+
+    <!-- End-effector pose & touch -->
+    <framepos   name="s_right_ee_pos"         objtype="site" objname="right_ee"/>
+    <framepos   name="s_left_ee_pos"          objtype="site" objname="left_ee"/>
+    <framezaxis name="s_right_suction_normal" objtype="site" objname="right_suction_dir"/>
+    <framezaxis name="s_left_suction_normal"  objtype="site" objname="left_suction_dir"/>
+    <touch      name="s_right_suction_touch"  site="right_ee"/>
+    <touch      name="s_left_suction_touch"   site="left_ee"/>
+  </sensor>
+
+</mujoco>
