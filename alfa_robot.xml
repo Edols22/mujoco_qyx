@@ -71,7 +71,9 @@
     <geom name="floor" type="plane" size="5 5 0.1" material="grid_mat"/>
 
     <body name="base_link" pos="-0.3 0 0.1">
-      <freejoint name="base_freejoint"/>
+      <joint name="base_x" type="slide" axis="1 0 0" damping="3000" limited="false"/>
+      <joint name="base_y" type="slide" axis="0 1 0" damping="3000" limited="false"/>
+      <joint name="base_yaw" type="hinge" axis="0 0 1" damping="3000" range="-3.14159 3.14159"/>
       <inertial pos="-0.441931 0.000260 0.176428" mass="2000.931"
                 fullinertia="66.5681 65.6389 112.9385 5.748e-10 9.8501 2.760e-9"/>
       <geom class="visual"    type="mesh" mesh="vis_base_link" material="blue"/>
@@ -243,6 +245,9 @@
   </worldbody>
 
   <actuator>
+    <position name="act_base_x"   joint="base_x"   kp="50000" ctrlrange="-10 10"  forcerange="-5000 5000"/>
+    <position name="act_base_y"   joint="base_y"   kp="50000" ctrlrange="-10 10"  forcerange="-5000 5000"/>
+    <position name="act_base_yaw" joint="base_yaw" kp="50000" ctrlrange="-3.14 3.14" forcerange="-5000 5000"/>
     <!-- Base -->
     <position name="act_turn"        joint="turn"        kp="50000" ctrlrange="-3.14 3.14" forcerange="-5000 5000"/>
     <position name="act_updown"      joint="updown"      kp="50000" ctrlrange="0 1.0"      forcerange="-5000 5000"/>
@@ -270,6 +275,9 @@
   </actuator>
 
   <sensor>
+    <jointpos name="s_base_x"   joint="base_x"/>
+    <jointpos name="s_base_y"   joint="base_y"/>
+    <jointpos name="s_base_yaw" joint="base_yaw"/>
     <!-- Base -->
     <jointpos name="s_turn"        joint="turn"/>
     <jointpos name="s_updown"      joint="updown"/>

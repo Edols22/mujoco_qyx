@@ -11,6 +11,9 @@ def main():
     #   右臂: rightarmbase(横移), rightjoint1(伸缩), rightjoint2-4(旋转)
     #   左臂: leftarmbase(横移), leftjoint1(伸缩), leftjoint2-5(旋转), leftjoint6(末端伸缩)
     ctrl_cmds = {
+        "base_x":        0.0,
+        "base_y":        0.0,
+        "base_yaw":      0.0,
         "turn":          0.0,
         "updown":        0.3,
         "plate":         0.0,
